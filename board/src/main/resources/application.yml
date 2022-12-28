@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3366/examplesdb?userUnicode=true&serverTimezone=Asia/Seoul
+    username: carpediem
+    password: 1234
+  thymeleaf:
