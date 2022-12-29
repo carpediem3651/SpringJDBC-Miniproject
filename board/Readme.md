@@ -1,6 +1,6 @@
 # 게시판 만들기
 
-##사용된 기술
+## 사용된 기술
 
 -Spring Boot
 -Spring MVC
