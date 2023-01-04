@@ -21,11 +21,16 @@ public class UserService {
 //    }
 
     // 보통 서비스에서는 @Transactional을 붙여 하나의 Tx로 처리한다.
-    // Spring Noot는 Tx를 처리하는 Tx관리자를 가지고 있다.
+    // Spring boot는 Tx를 처리하는 Tx관리자를 가지고 있다.
     @Transactional
     public User addUser(String name, String email, String password) {
         User user = userDao.addUser(email, name, password);
         userDao.mappingUserRole(user.getUserId()); //권한부여
         return user;
+    }
+
+    @Transactional
+    public User getUser(String email) {
+        return userDao.getUser(email);
     }
 }

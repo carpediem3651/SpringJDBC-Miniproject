@@ -1,22 +1,34 @@
 package com.example.board.controller;
 
+import com.example.board.dto.LoginInfo;
 import com.example.board.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 public class BoardController {
+
     // 게시물 목록을 보여준다.
+    // classpath:/template/list.html
     @GetMapping("/")
-    public String list() {
+    public String list(HttpSession session, Model model) {
+        LoginInfo loginInfo = (LoginInfo) session.getAttribute("loginInfo");
+        model.addAttribute("loginInfo", loginInfo);
         return "list";
     }
 
     @GetMapping("/board")
     public String board(@RequestParam("id") int id) {
+        System.out.println("id : "+id);
+
+//        id에 해당하는 게시물을 읽어온다.
+//        id에 해당하는 게시물의 조회수를 1증가한다.
         return "board";
     }
 

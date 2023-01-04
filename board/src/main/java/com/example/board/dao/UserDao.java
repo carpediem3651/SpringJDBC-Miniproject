@@ -1,6 +1,8 @@
 package com.example.board.dao;
 
 import com.example.board.dto.User;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -28,16 +30,15 @@ public class UserDao {
 
     @Transactional
     public User addUser(String email, String name, String password) {
-//        insert into user (email, name, password, regdate) value (?, ?, ?, now());
+//        insert into user (email, name, password, regdate) value (:name, :email, :password, :regdate);
 //        SELECT LAST_INSERT_ID();
         User user = new User();
         user.setName(name);
         user.setEmail(email);
         user.setPassword(password);
-        user.setRegdate(LocalDateTime.now());
-        SqlParameterSource params = new BeanPropertySqlParameterSource(user);
-//        insert를 실행하고 자동으로 생성된 id를 가져온다
-        Number number = insertUser.executeAndReturnKey(params);
+        user.setRegdate(LocalDateTime.now()); //현재 시간정보 저장
+        SqlParameterSource params = new BeanPropertySqlParameterSource(user); //DTO에 있는 값을 가져온다.
+        Number number = insertUser.executeAndReturnKey(params); //insert를 실행하고 자동으로 생성된 id를 가져온다
         int userId = number.intValue();
         user.setUserId(userId);
         return user;
@@ -50,4 +51,21 @@ public class UserDao {
         SqlParameterSource params = new MapSqlParameterSource("userId", userId);
         jdbcTemplate.update(sql, params);
     }
+
+    @Transactional
+    public User getUser(String email) {
+        // user_id => setUserId, email => setmail....
+        String sql = "select user_id, email, name, password, regdate from user where email= :email";
+        SqlParameterSource params = new MapSqlParameterSource("email", email);
+        RowMapper<User> rowMapper = BeanPropertyRowMapper.newInstance(User.class);
+        User user = jdbcTemplate.queryForObject(sql, params, rowMapper);
+        return user;
+    }
+
+//    @Transactional
+//    public User getUser(String email) {
+//        String sql = "select user_id, email, name, password, regdate from user where email = :email";
+//
+//        jdbcTemplate.queryForObject(sql, )
+//    }
 }

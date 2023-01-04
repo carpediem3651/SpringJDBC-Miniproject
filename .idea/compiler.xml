@@ -11,5 +11,9 @@
         <module name="board.board.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="board.board.main~1" target="11" />
+      <module name="board.board.test~1" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
