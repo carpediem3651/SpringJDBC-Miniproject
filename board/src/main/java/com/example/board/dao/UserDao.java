@@ -61,11 +61,4 @@ public class UserDao {
         User user = jdbcTemplate.queryForObject(sql, params, rowMapper);
         return user;
     }
-
-//    @Transactional
-//    public User getUser(String email) {
-//        String sql = "select user_id, email, name, password, regdate from user where email = :email";
-//
-//        jdbcTemplate.queryForObject(sql, )
-//    }
 }
