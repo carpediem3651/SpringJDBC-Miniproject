@@ -22,11 +22,10 @@ public class BoardController {
     // 게시물 목록을 보여준다.
     // classpath:/template/list.html
     @GetMapping("/")
-    public String list(HttpSession session, Model model) {
+    public String list(@RequestParam(name = "page", defaultValue = "1") int pagwStr, HttpSession session, Model model) {
         LoginInfo loginInfo = (LoginInfo) session.getAttribute("loginInfo");
         model.addAttribute("loginInfo", loginInfo);
 
-        int page = 1;
         int totalCount = boardService.getTotalCount(); // 11
         List<Board> list = boardService.getBoards(page); // page가 1,2,3,4 ....
         int pageCount = totalCount / 10; // 1
@@ -45,11 +44,13 @@ public class BoardController {
     }
 
     @GetMapping("/board")
-    public String board(@RequestParam("id") int id) {
+    public String board(@RequestParam("boardId") int boardId, Model model) {
         System.out.println("id : "+id);
 
 //        id에 해당하는 게시물을 읽어온다.
 //        id에 해당하는 게시물의 조회수를 1증가한다.
+        Board board = boardService.getBoard(boardId);
+        model.addAttribute("board", board);
         return "board";
     }
 
@@ -86,6 +87,19 @@ public class BoardController {
         boardService.addBoard(loginInfo.getUserId(), title, content);
 
         return "redirect:/"; // 리스트 보기로 리다이렉트한다.
+    }
 
+    @GetMapping("/delete")
+    public String delete(
+        @RequestParam("boardId") int boardId,
+        HttpSession session
+    ) {
+        LoginInfo loginInfo = (LoginInfo) session.getAttribute("loginInfo");
+        if(loginInfo == null) {
+            return "redirect:/loginform";
+        }
+
+        boardService.deleteBoard(loginInfo.getUserId(), boardId);
+        return "redirect:/";
     }
 }
