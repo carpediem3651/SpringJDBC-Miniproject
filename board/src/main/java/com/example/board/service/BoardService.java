@@ -16,10 +16,9 @@ public class BoardService {
     @Transactional
     public void addBoard(int userId, String title, String content) {
         boardDao.addBoard(userId, title, content);
-
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) // select할때는
     public int getTotalCount() {
         return boardDao.getTotalCount();
     }
@@ -31,18 +30,34 @@ public class BoardService {
 
     @Transactional
     public Board getBoard(int boardId) {
-//        id에 해당하는 게시물을 읽어온다.
-        Board board = boardDao.geBoard(boardId);
-//        id에 해당하는 게시물의 조회수를 1증가시킨다.
-        boardDao.updateViewCnt(boardId);
+        return getBoard(boardId, true);
+    }
+
+    // updateViewCnt가 true면 글의 조회수를 증가, false면 글의 조회수를 증가하지 않도록 한다.
+    @Transactional
+    public Board getBoard(int boardId, boolean updateViewCnt){
+        Board board = boardDao.getBoard(boardId);
+        if(updateViewCnt) {
+            boardDao.updateViewCnt(boardId);
+        }
         return board;
     }
 
     @Transactional
     public void deleteBoard(int userId, int boardId) {
         Board board = boardDao.getBoard(boardId);
-        if(board.getUserId() == userId) {
-            boardDao.deleteboard(boardId);
+        if (board.getUserId() == userId) {
+            boardDao.deleteBoard(boardId);
         }
+    }
+
+    @Transactional
+    public void deleteBoard(int boardId) {
+        boardDao.deleteBoard(boardId);
+    }
+
+    @Transactional
+    public void updateBoard(int boardId, String title, String content) {
+        boardDao.updateBoard(boardId, title, content);
     }
 }
